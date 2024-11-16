@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DinnerTonight Bio Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+</head>
+<body>
+    <!-- Title Section -->
+    <header class="header">
+        <h1 class="title">DinnerTonight</h1>
+        <p class="subtitle">Bio Generator</p>
+        <p class="description">
+            Create a personalized bio based on your career, personality, and interests. Fill out the form below to get started!
+        </p>
+    </header>
+
+    <!-- Form Section -->
+    <div class="form-container">
+        <form id="bioForm" class="form">
+            <label for="career">Career/Profession</label>
+            <select id="career" name="career">
+                <option value="">Select a career...</option>
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Artist">Artist</option>
+                <option value="Entrepreneur">Entrepreneur</option>
+                <option value="Chef">Chef</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Musician">Musician</option>
+            </select>
+
+            <label for="personality">Personality Trait</label>
+            <select id="personality" name="personality">
+                <option value="">Select a personality trait...</option>
+                <option value="Adventurous">Adventurous</option>
+                <option value="Creative">Creative</option>
+                <option value="Compassionate">Compassionate</option>
+                <option value="Outgoing">Outgoing</option>
+                <option value="Introverted">Introverted</option>
+            </select>
+
+            <label for="interests">Interest</label>
+            <select id="interests" name="interests">
+                <option value="">Select an interest...</option>
+                <option value="Cooking">Cooking</option>
+                <option value="Traveling">Traveling</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Music">Music</option>
+                <option value="Literature">Literature</option>
+                <option value="Technology">Technology</option>
+                <option value="Gaming">Gaming</option>
+            </select>
+
+            <label for="goals">Relationship Goals</label>
+            <select id="goals" name="goals">
+                <option value="">Select a goal...</option>
+                <option value="Casual">Casual</option>
+                <option value="Long-term">Long-term</option>
+                <option value="Adventurous">Adventurous</option>
+                <option value="Deep Connection">Deep Connection</option>
+            </select>
+
+            <button type="button" onclick="submitForm()">Generate Bio</button>
+        </form>
+
+        <!-- Area to display generated bio -->
+        <div id="bioOutput" class="bio-output" style="display: none;"></div>
+    </div>
+
+    <script>
+        function submitForm() {
+            const career = document.getElementById("career").value;
+            const personality = document.getElementById("personality").value;
+            const interests = document.getElementById("interests").value;
+            const goals = document.getElementById("goals").value;
+
+            fetch("/generate_bio", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    career: career,
+                    personality: personality,
+                    interests: interests,
+                    goals: goals
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const bioOutput = document.getElementById("bioOutput");
+                bioOutput.style.display = "block";
+                const title = data.title; 
+                const bio = data.bio; // Display the AI-generated bio content here
+
+                bioOutput.innerHTML = `<h2 class="bio-title">${title}</h2><p class="bio-description">${bio}</p>`;
+
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
